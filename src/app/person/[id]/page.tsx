@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Navbar from "@/components/Navbar";
 import { ChevronLeft, Star, Calendar, User, Film, Tv, MapPin, Heart, ArrowRight, Share2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -84,7 +83,6 @@ export default function PersonDetailPage() {
 
   return (
     <main className="min-h-screen bg-[#0a0505] text-foreground selection:bg-primary/30">
-      <Navbar />
 
       <AnimatePresence mode="wait">
         {loading ? (
@@ -124,7 +122,6 @@ export default function PersonDetailPage() {
             transition={{ duration: 0.8 }}
           >
             <section className="px-6 md:px-24 py-32 space-y-32 max-w-7xl mx-auto">
-              {/* Profile Identity Block */}
               <div className="grid md:grid-cols-12 gap-16 items-start border-b border-white/5 pb-32">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -213,7 +210,6 @@ export default function PersonDetailPage() {
                 </div>
               </div>
 
-              {/* Cinematic Portfolio Sections */}
               <div className="space-y-16">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-6">
@@ -276,7 +272,6 @@ export default function PersonDetailPage() {
               </div>
             </section>
 
-            {/* Visual Accents */}
             <div className="fixed bottom-0 left-0 w-full h-64 bg-linear-to-t from-black to-transparent pointer-events-none opacity-40 z-0" />
             <motion.div
               animate={{ rotate: 360 }}

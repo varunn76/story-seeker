@@ -11,7 +11,6 @@ export function parseAIResponse(text: string) {
   return null;
 }
 
-// Strips the ```json ... ``` block from the AI reply so users don't see raw JSON
 export function stripJsonBlock(text: string): string {
   return text.replace(/```json[\s\S]*?```/g, "").trim();
 }

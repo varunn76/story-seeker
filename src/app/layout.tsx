@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 
+import Navbar from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -34,7 +37,9 @@ export const metadata: Metadata = {
   authors: [{ name: "StorySeeker" }],
   creator: "StorySeeker",
 
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+  ),
 
   openGraph: {
     title: "StorySeeker — Find Stories From Memory",
@@ -57,8 +62,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "StorySeeker",
-    description:
-      "Search stories by memory. No titles needed.",
+    description: "Search stories by memory. No titles needed.",
     images: ["/og-image.png"],
   },
 
@@ -68,7 +72,6 @@ export const metadata: Metadata = {
 
   category: "entertainment",
 };
-
 
 export default function RootLayout({
   children,
@@ -80,8 +83,12 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <Providers>{children}</Providers>
+      <body className="min-h-full flex flex-col bg-background">
+        <Providers>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

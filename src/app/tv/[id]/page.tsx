@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Navbar from "@/components/Navbar";
 import { 
   ChevronLeft, Play, Star, Calendar, Globe, User, 
   List, Monitor, Share2, Plus, ArrowRight, Heart
@@ -115,7 +114,6 @@ export default function TVDetailPage() {
 
   return (
     <main ref={scrollRef} className="min-h-screen bg-[#0a0505] text-foreground selection:bg-primary/30 relative">
-      <Navbar />
 
       <AnimatePresence mode="wait">
         {loading ? (
@@ -156,7 +154,6 @@ export default function TVDetailPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
           >
-            {/* Cinematic Backdrop with Parallax */}
             <div className="fixed inset-0 w-full h-[110vh] -top-[10vh] pointer-events-none z-0 overflow-hidden">
               <motion.img
                 style={{ opacity: backdropOpacity, scale: backdropScale }}
@@ -167,7 +164,6 @@ export default function TVDetailPage() {
               <div className="absolute inset-0 bg-linear-to-t from-[#0a0505] via-[#0a0505]/80 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 h-[60vh] bg-linear-to-t from-[#0a0505] to-transparent" />
 
-              {/* Animated Light Leaks */}
               <motion.div
                 animate={{ x: [0, -100, 0], opacity: [0.2, 0.4, 0.2] }}
                 transition={{ duration: 12, repeat: Infinity, delay: 2 }}
@@ -176,10 +172,8 @@ export default function TVDetailPage() {
             </div>
 
             <div className="relative z-10 pt-32 space-y-24">
-              {/* Main Content Layout */}
               <section className="max-w-7xl mx-auto px-6 md:px-12">
                 <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-end">
-                  {/* Poster Corner */}
                   <div className="lg:col-span-4 hidden lg:block">
                     <div className="relative group">
                       <div className="absolute -inset-8 bg-blue-500/20 blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
@@ -194,7 +188,6 @@ export default function TVDetailPage() {
                     </div>
                   </div>
 
-                  {/* Title Block */}
                   <div className="lg:col-span-8 space-y-10 pb-4">
                     <div className="space-y-6">
                       <div className="flex flex-wrap gap-4 items-center">
@@ -272,7 +265,6 @@ export default function TVDetailPage() {
                 </div>
               </section>
 
-              {/* TV Specific Season Selector Block */}
               <section className="bg-linear-to-b from-transparent via-[#0a0505] to-[#0a0505] relative z-20">
                 <div className="max-w-7xl mx-auto px-6 md:px-12 py-40 space-y-32">
                   <div className="grid lg:grid-cols-12 gap-24">
@@ -393,7 +385,6 @@ export default function TVDetailPage() {
                 </div>
               </section>
 
-              {/* Footer Area */}
               <section className="px-6 md:px-12 pb-32">
                 <div className="max-w-7xl mx-auto py-24 border-t border-white/5 text-center">
                    <Monitor className="w-12 h-12 text-blue-400 mx-auto mb-8 animate-pulse" />

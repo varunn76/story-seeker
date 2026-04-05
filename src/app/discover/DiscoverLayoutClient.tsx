@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import ChatSidebar from "@/components/ChatSidebar";
-import Navbar from "@/components/Navbar";
 import { useChatStore } from "@/hooks/useChatStore";
 
 export default function DiscoverLayoutClient({ children }: { children: React.ReactNode }) {
@@ -17,8 +16,6 @@ export default function DiscoverLayoutClient({ children }: { children: React.Rea
 
   return (
     <main className="h-screen flex flex-col bg-black text-foreground overflow-hidden">
-      <Navbar />
-
       <div className="flex-1 flex pt-24 overflow-hidden">
         <ChatSidebar
           sessions={store.sessions}

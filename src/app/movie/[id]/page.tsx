@@ -1,14 +1,10 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Navbar from "@/components/Navbar";
 import {
   ChevronLeft,
   Play,
   Star,
-  Calendar,
-  Clock,
-  Globe,
   User,
   Info,
   Share2,
@@ -24,27 +20,6 @@ import {
   useTransform,
 } from "framer-motion";
 import Link from "next/link";
-
-interface MovieDetail {
-  tagline: string;
-  title: string;
-  description: string;
-  backdrop_path: string;
-  poster_path: string;
-  release_date: string;
-  runtime: number;
-  vote_average: number;
-  genres: string[];
-  original_language: string;
-  cast: {
-    id: number;
-    actor: string;
-    character: string;
-    profile_path: string | null;
-  }[];
-  director: { name: string }[];
-  videos: { key: string; site: string; type: string }[];
-}
 
 const MovieSkeleton = () => (
   <div className="min-h-screen bg-[#0a0505] overflow-hidden">
@@ -109,7 +84,7 @@ export default function MovieDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
-  
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: scrollRef,
@@ -119,11 +94,22 @@ export default function MovieDetailPage() {
   const backdropOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0.4]);
   const backdropScale = useTransform(scrollYProgress, [0, 0.4], [1, 1.1]);
 
-  const { data: movie, isLoading: movieLoading, error: movieError } = useMovieDetail(id);
-  const { data: providers, isLoading: providersLoading } = useWatchProviders(id, "movie");
+  const {
+    data: movie,
+    isLoading: movieLoading,
+    error: movieError,
+  } = useMovieDetail(id);
+  const { data: providers, isLoading: providersLoading } = useWatchProviders(
+    id,
+    "movie",
+  );
 
   const loading = movieLoading;
-  const error = movieError ? (movieError instanceof Error ? movieError.message : "Error loading movie") : null;
+  const error = movieError
+    ? movieError instanceof Error
+      ? movieError.message
+      : "Error loading movie"
+    : null;
 
   const releaseYear = movie?.release_date?.split("-")[0] || "N/A";
   const formattedRuntime = movie?.runtime
@@ -138,8 +124,6 @@ export default function MovieDetailPage() {
       ref={scrollRef}
       className="min-h-screen bg-[#0a0505] text-foreground selection:bg-primary/30 relative"
     >
-      <Navbar />
-
       <AnimatePresence mode="wait">
         {loading ? (
           <motion.div
@@ -179,7 +163,6 @@ export default function MovieDetailPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
           >
-            {/* Cinematic Backdrop with Parallax */}
             <div className="fixed inset-0 w-full h-[140vh] -top-[10vh] pointer-events-none z-0 overflow-hidden">
               <motion.img
                 style={{ opacity: backdropOpacity, scale: backdropScale }}
@@ -190,7 +173,6 @@ export default function MovieDetailPage() {
               <div className="absolute inset-0 bg-linear-to-t from-[#0a0505] via-[#0a0505]/80 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 h-[60vh] bg-linear-to-t from-[#0a0505] to-transparent" />
 
-              {/* Animated Light Leaks */}
               <motion.div
                 animate={{ x: [0, 100, 0], opacity: [0.3, 0.5, 0.3] }}
                 transition={{ duration: 10, repeat: Infinity }}
@@ -199,10 +181,8 @@ export default function MovieDetailPage() {
             </div>
 
             <div className="relative z-10 pt-32 space-y-24">
-              {/* Main Content Layout */}
               <section className="max-w-7xl mx-auto px-6 md:px-12">
                 <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-end">
-                  {/* Poster Corner */}
                   <div className="lg:col-span-4 hidden lg:block">
                     <div className="relative group">
                       <div className="absolute -inset-8 bg-primary/20 blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
@@ -217,7 +197,6 @@ export default function MovieDetailPage() {
                     </div>
                   </div>
 
-                  {/* Title Block */}
                   <div className="lg:col-span-8 space-y-10 pb-4">
                     <div className="space-y-6">
                       <div className="flex flex-wrap gap-4 items-center">
@@ -318,10 +297,8 @@ export default function MovieDetailPage() {
                 </div>
               </section>
 
-              {/* Cinematic Details Grid */}
               <section className="bg-linear-to-b from-transparent via-[#0a0505] to-[#0a0505] relative z-20">
                 <div className="max-w-7xl mx-auto px-6 md:px-12 py-40 grid lg:grid-cols-12 gap-24">
-                  {/* Story Side */}
                   <div className="lg:col-span-8 space-y-20">
                     <div className="space-y-12">
                       <div className="flex items-center gap-6">
@@ -346,7 +323,6 @@ export default function MovieDetailPage() {
                       </p>
                     </div>
 
-                    {/* Cast & Crew Section */}
                     <div className="space-y-12">
                       <div className="flex items-center justify-between">
                         <h3 className="text-xs font-black uppercase tracking-[0.4em] text-primary">
@@ -356,53 +332,54 @@ export default function MovieDetailPage() {
                       </div>
 
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        {movie.cast.slice(0, 8).map((person: any, i: number) => (
-                          <motion.div
-                            key={person.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.05 }}
-                            viewport={{ once: true }}
-                          >
-                            <Link
-                              href={`/person/${person.id}`}
-                              className="group block space-y-4"
+                        {movie.cast
+                          .slice(0, 8)
+                          .map((person: any, i: number) => (
+                            <motion.div
+                              key={person.id}
+                              initial={{ opacity: 0, y: 20 }}
+                              whileInView={{ opacity: 1, y: 0 }}
+                              transition={{ delay: i * 0.05 }}
+                              viewport={{ once: true }}
                             >
-                              <div className="aspect-square rounded-[32px] overflow-hidden bg-zinc-900 border border-white/5 relative isolate">
-                                {person.profile_path ? (
-                                  <img
-                                    src={`https://image.tmdb.org/t/p/w342${person.profile_path}`}
-                                    className="w-full h-full object-cover filter grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110"
-                                    alt={person.actor}
-                                  />
-                                ) : (
-                                  <div className="w-full h-full flex items-center justify-center text-zinc-800 bg-zinc-900">
-                                    <User size={40} />
+                              <Link
+                                href={`/person/${person.id}`}
+                                className="group block space-y-4"
+                              >
+                                <div className="aspect-square rounded-[32px] overflow-hidden bg-zinc-900 border border-white/5 relative isolate">
+                                  {person.profile_path ? (
+                                    <img
+                                      src={`https://image.tmdb.org/t/p/w342${person.profile_path}`}
+                                      className="w-full h-full object-cover filter grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110"
+                                      alt={person.actor}
+                                    />
+                                  ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-zinc-800 bg-zinc-900">
+                                      <User size={40} />
+                                    </div>
+                                  )}
+                                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-40 group-hover:opacity-0 transition-opacity" />
+                                  <div className="absolute inset-x-0 bottom-0 py-4 px-2 bg-linear-to-t from-black to-transparent opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all">
+                                    <span className="text-[9px] font-black text-white uppercase text-center block tracking-widest">
+                                      Profile Details
+                                    </span>
                                   </div>
-                                )}
-                                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-40 group-hover:opacity-0 transition-opacity" />
-                                <div className="absolute inset-x-0 bottom-0 py-4 px-2 bg-linear-to-t from-black to-transparent opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all">
-                                  <span className="text-[9px] font-black text-white uppercase text-center block tracking-widest">
-                                    Profile Details
-                                  </span>
                                 </div>
-                              </div>
-                              <div className="pl-1">
-                                <p className="text-white font-black italic uppercase text-[12px] tracking-tight group-hover:text-primary transition-colors">
-                                  {person.actor}
-                                </p>
-                                <p className="text-zinc-500 font-bold text-[10px] uppercase tracking-widest truncate">
-                                  {person.character}
-                                </p>
-                              </div>
-                            </Link>
-                          </motion.div>
-                        ))}
+                                <div className="pl-1">
+                                  <p className="text-white font-black italic uppercase text-[12px] tracking-tight group-hover:text-primary transition-colors">
+                                    {person.actor}
+                                  </p>
+                                  <p className="text-zinc-500 font-bold text-[10px] uppercase tracking-widest truncate">
+                                    {person.character}
+                                  </p>
+                                </div>
+                              </Link>
+                            </motion.div>
+                          ))}
                       </div>
                     </div>
                   </div>
 
-                  {/* Sidebar Details */}
                   <div className="lg:col-span-4 lg:pl-12">
                     <div className="p-10 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[48px] space-y-12 h-fit text-center lg:text-left sticky top-32">
                       <div className="space-y-2">
@@ -413,8 +390,6 @@ export default function MovieDetailPage() {
                           {movie.director?.[0]?.name || "Visionary Director"}
                         </p>
                       </div>
-
-
 
                       <div className="space-y-2">
                         <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">
@@ -430,16 +405,22 @@ export default function MovieDetailPage() {
                         <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 text-center lg:text-left">
                           Watch Now
                         </h4>
-                        
-                        {providers && (providers.flatrate || providers.rent || providers.buy) ? (
+
+                        {providers &&
+                        (providers.flatrate ||
+                          providers.rent ||
+                          providers.buy) ? (
                           <div className="space-y-6">
                             {providers.flatrate && (
                               <div className="flex flex-wrap justify-center lg:justify-start gap-4">
                                 {providers.flatrate.map((provider: any) => (
-                                  <div key={provider.provider_id} className="group relative">
+                                  <div
+                                    key={provider.provider_id}
+                                    className="group relative"
+                                  >
                                     <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 overflow-hidden hover:scale-110 active:scale-95 transition-all shadow-xl hover:shadow-primary/20">
-                                      <img 
-                                        src={`https://image.tmdb.org/t/p/original${provider.logo_path}`} 
+                                      <img
+                                        src={`https://image.tmdb.org/t/p/original${provider.logo_path}`}
                                         alt={provider.provider_name}
                                         className="w-full h-full object-cover"
                                       />
@@ -452,22 +433,25 @@ export default function MovieDetailPage() {
                               </div>
                             )}
 
-                            {!providers.flatrate && (providers.rent || providers.buy) && (
-                              <div className="text-[10px] font-black text-white/40 uppercase tracking-widest text-center lg:text-left">
-                                Available for {providers.rent ? "Rent" : "Buy Only"}
-                              </div>
-                            )}
+                            {!providers.flatrate &&
+                              (providers.rent || providers.buy) && (
+                                <div className="text-[10px] font-black text-white/40 uppercase tracking-widest text-center lg:text-left">
+                                  Available for{" "}
+                                  {providers.rent ? "Rent" : "Buy Only"}
+                                </div>
+                              )}
                           </div>
                         ) : (
                           <div className="text-sm font-bold text-white/20 italic">
-                            Streaming data currently unavailable for your region.
+                            Streaming data currently unavailable for your
+                            region.
                           </div>
                         )}
 
                         <div className="pt-8 border-t border-white/5">
-                           <button className="w-full py-4 bg-white text-black font-black uppercase text-xs rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all">
-                              Start Streaming
-                           </button>
+                          <button className="w-full py-4 bg-white text-black font-black uppercase text-xs rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all">
+                            Start Streaming
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -475,7 +459,6 @@ export default function MovieDetailPage() {
                 </div>
               </section>
 
-              {/* Footer Area */}
               <section className="px-6 md:px-12 pb-32">
                 <div className="max-w-7xl mx-auto py-24 border-t border-white/5 text-center">
                   <Bot className="w-12 h-12 text-primary mx-auto mb-8 animate-bounce-slow" />

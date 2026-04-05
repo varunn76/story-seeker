@@ -1,4 +1,4 @@
-import { Bot, BrainCircuit, Cpu, Film, LayoutGrid, MessageSquare, Search, Zap } from "lucide-react";
+import { Bot, BrainCircuit, Cpu, Eye, Film, LayoutGrid, Lock, MessageSquare, Search, Server, Shield, Smartphone, Zap } from "lucide-react";
 export const POSTERS = [
   {
     id: 1,
@@ -123,4 +123,78 @@ export const steps = [
     icon: Film,
     color: "from-emerald-500 to-teal-500",
   },
+];
+
+export   const PRIVACY_SECTION = [
+    {
+      icon: Shield,
+      title: "No Data Storage",
+      content:
+        "We do not store your personal data, chat history, or search queries on our servers. StorySeeker operates without a database, and your interactions are not saved or tracked by us.",
+    },
+    {
+      icon: Eye,
+      title: "Local-First Experience",
+      content:
+        "Your chat sessions and API keys are stored solely in your browser's localStorage. This means your data stays on your device and is never transmitted to our servers.",
+    },
+    {
+      icon: Server,
+      title: "Third-Party Services",
+      content:
+        "StorySeeker interacts with AI providers (OpenAI, Google, Anthropic) and TMDB to process requests. These services receive only the anonymized fragments necessary to return your results.",
+    },
+    {
+      icon: Lock,
+      title: "Security Approach",
+      content:
+        "By not storing user data, we minimize the risk of centralized data breaches. However, users remain responsible for securing their own local devices and API keys.",
+    },
+    {
+      icon: Smartphone,
+      title: "Zero Tracking",
+      content:
+        "We do not use tracking cookies or analytics scripts. Only essential browser storage is used to maintain your session preferences locally.",
+    },
+    {
+      icon: Film,
+      title: "TMDB Data Usage",
+      content:
+        "We fetch movie metadata, posters, and ratings directly via the TMDB API. We do not own or store this information; it is provided as-is from their global database.",
+    },
+  ];
+
+export const TERMS_POINTS = [
+  {
+    title: "Service Overview",
+    desc: "StorySeeker is a discovery tool that helps users find movies, shows, and stories using AI-assisted search. Results are generated dynamically and may not always be accurate or complete."
+  },
+  {
+    title: "No Data Storage",
+    desc: "StorySeeker does not store user data, chat history, or personal information on any server. The platform operates without a database, and interactions are not retained by us."
+  },
+  {
+    title: "User Responsibility",
+    desc: "You agree to use the platform responsibly. This includes avoiding misuse such as automated scraping, abusive queries, or attempts to exploit or disrupt the system."
+  },
+  {
+    title: "Third-Party Services",
+    desc: "StorySeeker relies on third-party services including AI providers (OpenAI, Google, Anthropic) and TMDB for content data. Your queries are processed by these services to generate results."
+  },
+  {
+    title: "Content & Attribution",
+    desc: "All movie and TV data, including posters and metadata, are provided by TMDB and belong to their respective owners. StorySeeker does not claim ownership of this content."
+  },
+  {
+    title: "No Guarantees",
+    desc: "The platform is provided “as is.” We do not guarantee accuracy, availability, or uninterrupted access. AI-generated results may vary and should not be considered definitive."
+  },
+  {
+    title: "Local Storage Usage",
+    desc: "Some data such as chat sessions or API keys may be stored locally in your browser. This data remains on your device and is not accessible to us."
+  },
+  {
+    title: "Changes to Service",
+    desc: "We may update, modify, or discontinue features at any time without prior notice as the product evolves."
+  }
 ];
