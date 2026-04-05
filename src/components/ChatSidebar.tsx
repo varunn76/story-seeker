@@ -27,7 +27,6 @@ const ChatSidebar = ({
     setProvider(savedProvider);
   }, []);
 
-  // Load API key whenever provider changes
   React.useEffect(() => {
     const keyName = `chatbot_api_key_${provider}`;
     const savedKey = localStorage.getItem(keyName) || "";
@@ -37,7 +36,6 @@ const ChatSidebar = ({
   const handleProviderChange = (newProvider: string) => {
     setProvider(newProvider);
     localStorage.setItem("chatbot_provider", newProvider);
-    // Dispatch event for other components to sync
     window.dispatchEvent(new Event("storage"));
   };
 
@@ -45,7 +43,6 @@ const ChatSidebar = ({
     setApiKey(val);
     const keyName = `chatbot_api_key_${provider}`;
     localStorage.setItem(keyName, val);
-    // Dispatch event for other components to sync
     window.dispatchEvent(new Event("storage"));
   };
 
@@ -103,7 +100,6 @@ const ChatSidebar = ({
       </div>
 
       <div className="pt-4 border-t border-white/5 space-y-4">
-        {/* Model Selection */}
         <div className="space-y-2">
           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 px-2">
             Select Model
@@ -116,7 +112,6 @@ const ChatSidebar = ({
           </div>
         </div>
 
-        {/* API Key Input */}
         <div className="space-y-2">
           <div className="flex items-center justify-between px-2">
             <label className="text-[10px] font-black uppercase tracking-widest text-white/30">

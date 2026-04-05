@@ -23,7 +23,6 @@
   --foreground: #f4f4f5;
   --text-secondary: #a1a1aa;
 
-  /* keep your red, but only as accent */
   --primary: #c94436;
 
   --border: #27272a;
@@ -39,7 +38,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -57,7 +55,6 @@ body {
   background: #3f3f46;
 }
 
-/* Glassmorphism Classes */
 .glass {
   background: rgba(18, 18, 26, 0.7);
   backdrop-filter: blur(12px);
@@ -88,7 +85,6 @@ body {
   mask-image: linear-gradient(to bottom, black, transparent);
 }
 
-/* Glow Effects */
 .glow-primary {
   box-shadow: 0 0 20px rgba(201, 68, 54, 0.3);
 }

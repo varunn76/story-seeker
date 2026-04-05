@@ -1,16 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 
-interface Movie {
-  id: number;
-  title: string;
-  image: string;
-  metadata: {
-    duration: string;
-    year: string;
-    language: string;
-  };
-}
-
 export const useDiscoverMovies = (version: string = "movie", page: number = 1) => {
   return useQuery({
     queryKey: ["discover", version, page],
@@ -35,6 +24,6 @@ export const useDiscoverMovies = (version: string = "movie", page: number = 1) =
           },
         }));
     },
-    staleTime: 1000 * 60 * 60 * 24, // Discover results can be cached longer
+    staleTime: 1000 * 60 * 60 * 24,
   });
 };

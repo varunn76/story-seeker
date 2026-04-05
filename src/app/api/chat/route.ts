@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import OpenAI from "openai";
@@ -9,15 +10,14 @@ const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
 export async function POST(req: Request) {
   try {
     const { messages, provider, apiKey } = await req.json();
-    console.log("\n🤖 [Chat API] Provider:", provider);
-    console.log("🤖 [Chat API] Messages count:", messages.length);
+    // console.log("\n [Chat API] Provider:", provider);
+    // console.log(" [Chat API] Messages count:", messages.length);
 
-    // Rate limiting for users without their own API key
     if (!apiKey) {
       const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
       const now = Date.now();
-      const windowMs = 60 * 60 * 1000; // 1 hour
-      const limit = 2; // minimal usage
+      const windowMs = 60 * 60 * 1000; 
+      const limit = 4; 
 
       const userRecord = rateLimitMap.get(ip);
       if (!userRecord || (now - userRecord.timestamp > windowMs)) {
@@ -37,13 +37,11 @@ export async function POST(req: Request) {
     const systemPrompt = buildSystemPrompt();
     let reply = "";
 
+    
     if (provider === "gemini") {
       const ai = new GoogleGenAI({
         apiKey: apiKey || process.env.GEMINI_API_KEY || "",
       });
-
-      // Build contents array from conversation history
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const contents = messages.map((m: any) => ({
         role: m.role === "assistant" ? "model" : "user",
         parts: [{ text: m.content }],
@@ -66,7 +64,6 @@ export async function POST(req: Request) {
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: systemPrompt },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ...messages.map((m: any) => ({ role: m.role, content: m.content })),
         ],
       });
@@ -74,8 +71,7 @@ export async function POST(req: Request) {
     } else if (provider === "claude") {
       const anthropic = new Anthropic({
         apiKey: apiKey || process.env.ANTHROPIC_API_KEY || "",
-      });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      })
       const anthropicMessages = messages.map((m: any) => ({
         role: m.role === "assistant" ? "assistant" : "user",
         content: m.content,
@@ -85,8 +81,7 @@ export async function POST(req: Request) {
         max_tokens: 1024,
         system: systemPrompt,
         messages: anthropicMessages,
-      });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      })
       reply = (message.content[0] as any).text;
     } else {
       return NextResponse.json({ error: "Invalid provider" }, { status: 400 });
@@ -102,7 +97,6 @@ export async function POST(req: Request) {
       msg = error.message;
     }
 
-    // Handle Gemini quota error specifically
     if (
       msg.includes("429") ||
       msg.toLowerCase().includes("quota") ||

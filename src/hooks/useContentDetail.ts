@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 
-// Movie Detail Hook
 export const useMovieDetail = (id: string | string[]) => {
   return useQuery({
     queryKey: ["movie", id],
@@ -10,11 +9,10 @@ export const useMovieDetail = (id: string | string[]) => {
       return response.json();
     },
     enabled: !!id,
-    staleTime: 1000 * 60 * 10, // 10 minutes
+    staleTime: 1000 * 60 * 10,
   });
 };
 
-// TV Detail Hook
 export const useTVDetail = (id: string | string[]) => {
   return useQuery({
     queryKey: ["tv", id],
@@ -28,7 +26,6 @@ export const useTVDetail = (id: string | string[]) => {
   });
 };
 
-// Person Detail Hook
 export const usePersonDetail = (id: string | string[]) => {
   return useQuery({
     queryKey: ["person", id],
@@ -43,7 +40,6 @@ export const usePersonDetail = (id: string | string[]) => {
   });
 };
 
-// Watch Providers Hook
 export const useWatchProviders = (id: string | string[], type: "movie" | "tv") => {
   return useQuery({
     queryKey: ["watch-providers", type, id],
@@ -54,6 +50,6 @@ export const useWatchProviders = (id: string | string[], type: "movie" | "tv") =
       return providerData.data.US || {};
     },
     enabled: !!id,
-    staleTime: 1000 * 60 * 60 * 12, // Stable for 12 hours
+    staleTime: 1000 * 60 * 60 * 12,
   });
 };

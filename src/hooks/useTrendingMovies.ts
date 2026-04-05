@@ -34,11 +34,11 @@ export const useTrendingMovies = (
         year: (item.release_date || item.first_air_date)?.split("-")[0] || "N/A",
         rating: item.vote_average?.toFixed(1) || "0.0",
         image: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
-        poster_path: item.poster_path, // Keep original for consistency checks if needed
+        poster_path: item.poster_path,
         description: item.overview || "No description available.",
         media_type: item.media_type || (version === "all" ? undefined : version),
       }));
     },
-    staleTime: 1000 * 60 * 60, // Trending data is stable for an hour
+    staleTime: 1000 * 60 * 60,
   });
 };

@@ -4,12 +4,9 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Star, Play, Info } from "lucide-react";
 
-/* We'll use local images or external ones later, for now we show titles */
-
 import { useState } from "react";
 import { useTrendingMovies, TrendingMovie } from "@/hooks/useTrendingMovies";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import MovieBackgroundPattern from "./MovieBackgroundPattern";
 import Link from "next/link";
 
 const MovieSkeleton = () => (
@@ -46,8 +43,6 @@ export const MovieCard = ({ movie }: { movie: TrendingMovie }) => {
               <p className="text-xs text-zinc-400">{movie.year}</p>
             </div>
           </div>
-
-          {/* Hover Overlay */}
           <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-6 text-center backdrop-blur-[2px]">
             <p className="text-white text-xs mb-6 line-clamp-4 font-medium leading-relaxed">
               {movie.description}
@@ -62,7 +57,6 @@ export const MovieCard = ({ movie }: { movie: TrendingMovie }) => {
             </div>
           </div>
 
-          {/* Rating Badge */}
           <div className="absolute top-3 right-3 px-2.5 py-1.5 bg-black/60 backdrop-blur-md rounded-xl border border-white/10 flex items-center gap-1.5">
             <Star className="w-3 h-3 text-yellow-500 fill-current" />
             <span className="text-white text-[10px] font-bold tracking-wider">

@@ -31,19 +31,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ results: [] });
     }
 
-    // Direct search using /search/multi as requested
     let url = `${TMDB_BASE_URL}/search/multi?query=${encodeURIComponent(queryText)}&api_key=${TMDB_API_KEY}&sort_by=popularity.desc&page=1`;
-
-    // Add year and language filters if available and supported
     if (searchParams.language) {
       url += `&language=${searchParams.language}`;
     }
-    if (searchParams.year) {
-      // Note: /search/multi doesn't officially support 'year', but we can append it to the query for better matching
-      // or rely on TMDB's internal sorting.
-    }
 
-    console.log("🔍 [Search API] TMDB URL:", url);
     const response = await fetch(url);
     if (!response.ok) {
       const errorText = await response.text();
@@ -54,7 +46,6 @@ export async function POST(req: Request) {
     const data = await response.json();
     let merged = data.results || [];
 
-    // Include movies, TV shows, and people
     merged = merged.filter(
       (m: any) =>
         m.media_type === "movie" ||
@@ -62,13 +53,12 @@ export async function POST(req: Request) {
         m.media_type === "person",
     );
 
-    // If we know the language, sort matches by language first (correct language > others)
     const preferredLang = searchParams.language || "";
     if (preferredLang) {
       merged.sort((a: any, b: any) => {
         const aMatch = a.original_language === preferredLang ? 1 : 0;
         const bMatch = b.original_language === preferredLang ? 1 : 0;
-        return bMatch - aMatch; // language matches come first
+        return bMatch - aMatch;
       });
     }
 
@@ -81,10 +71,6 @@ export async function POST(req: Request) {
       media_type: m.media_type || "movie",
     }));
 
-    console.log(
-      "🔍 [Search API] Final results:",
-      results.map((r: any) => `${r.title} (${r.release_date})`).join(", "),
-    );
     return NextResponse.json({ results });
   } catch (error: unknown) {
     console.error("Search API Error:", error);

@@ -9,46 +9,60 @@ export const Footer = () => {
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
         <div className="flex flex-col gap-4 items-center md:items-start">
           <div className="flex items-center gap-2">
-            <div className="bg-primary p-1 rounded-lg">
+            <div className="bg-primary p-1.5 rounded-lg">
               <Film className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-bold tracking-tight text-white">
-              AI<span className="text-primary">Movie</span>Finder
+            <span className="text-lg font-semibold tracking-tight text-white">
+              STORY<span className="text-primary">SEEKER</span>
             </span>
           </div>
-          <p className="text-text-secondary text-sm max-w-[200px]">
-            The smarter way to find your next favorite movie.
+
+          <p className="text-text-secondary text-sm max-w-[240px] leading-relaxed">
+            Find movies, shows, and stories from memory — not by name. 
+            Describe what you recall, and discover it instantly.
           </p>
         </div>
 
         <div className="flex items-center gap-8">
-          <Link href="#" className="text-text-secondary hover:text-white transition-colors text-sm font-medium">Privacy</Link>
-          <Link href="#" className="text-text-secondary hover:text-white transition-colors text-sm font-medium">Terms</Link>
-          <Link href="#" className="text-text-secondary hover:text-white transition-colors text-sm font-medium">API</Link>
-          <Link href="#" className="text-text-secondary hover:text-white transition-colors text-sm font-medium">Contact</Link>
+          <Link href="#" className="text-text-secondary hover:text-white transition-colors text-sm font-medium">
+            Privacy
+          </Link>
+          <Link href="#" className="text-text-secondary hover:text-white transition-colors text-sm font-medium">
+            Terms
+          </Link>
+          {/* <Link href="#" className="text-text-secondary hover:text-white transition-colors text-sm font-medium">
+            API
+          </Link> */}
+          <Link href="#" className="text-text-secondary hover:text-white transition-colors text-sm font-medium">
+            Contact
+          </Link>
         </div>
 
         <div className="flex flex-col gap-4 items-center md:items-end">
-          <div className="flex items-center gap-4">
-            <Link href="https://github.com" className="p-2 bg-surface border border-white/5 rounded-full hover:border-primary/50 transition-colors">
+          <div className="flex items-center gap-3">
+            <Link href="#" className="p-2 bg-surface border border-white/5 rounded-full hover:border-primary/50 hover:bg-surface-hover transition-all">
               <Mail className="w-5 h-5 text-text-secondary" />
             </Link>
-            <Link href="#" className="p-2 bg-surface border border-white/5 rounded-full hover:border-primary/50 transition-colors">
+            <Link href="#" className="p-2 bg-surface border border-white/5 rounded-full hover:border-primary/50 hover:bg-surface-hover transition-all">
               <Globe className="w-5 h-5 text-text-secondary" />
             </Link>
-            <Link href="#" className="p-2 bg-surface border border-white/5 rounded-full hover:border-primary/50 transition-colors">
+            <Link href="#" className="p-2 bg-surface border border-white/5 rounded-full hover:border-primary/50 hover:bg-surface-hover transition-all">
               <Video className="w-5 h-5 text-text-secondary" />
             </Link>
           </div>
-          <p className="text-[10px] text-text-secondary font-medium tracking-wider uppercase">
-            Powered by TMDB + AI
+
+          <p className="text-[11px] text-text-secondary font-medium tracking-wide uppercase">
+            Powered by TMDB • AI-assisted discovery
           </p>
         </div>
       </div>
-      
-      <div className="max-w-6xl mx-auto mt-12 pt-8 border-t border-white/[0.02] text-center">
-        <p className="text-[11px] text-zinc-600">
-          © {new Date().getFullYear()} AI Movie Finder. All rights reserved. Built with passion for cinema.
+
+      <div className="max-w-6xl mx-auto mt-12 pt-6 border-t border-white/[0.03] text-center">
+        <p className="text-[11px] text-zinc-500 leading-relaxed">
+          © {new Date().getFullYear()} StorySeeker. All rights reserved.  
+          <span className="block mt-1 text-zinc-600">
+            Built for people who remember stories — not titles.
+          </span>
         </p>
       </div>
     </footer>

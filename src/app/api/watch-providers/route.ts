@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
-  const type = searchParams.get("type") || "movie"; // 'movie' or 'tv'
+  const type = searchParams.get("type") || "movie"; 
 
   if (!id) {
     return NextResponse.json({ error: "ID is required" }, { status: 400 });
@@ -22,7 +22,7 @@ export async function GET(req: Request) {
 
     const response = await fetch(
       `${baseUrl}/${type}/${id}/watch/providers?api_key=${apiKey}`,
-      { next: { revalidate: 3600 } } // Cache for 1 hour
+      { next: { revalidate: 3600 } } 
     );
 
     if (!response.ok) {
@@ -31,8 +31,6 @@ export async function GET(req: Request) {
 
     const data = await response.json();
     
-    // We'll focus on US results by default, or you can pass a region
-    // The structure is results: { [region]: { flatrate: [], rent: [], buy: [] } }
     return NextResponse.json({ data: data.results });
   } catch (error: any) {
     console.error("Watch Providers Error:", error.message);

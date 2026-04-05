@@ -3,14 +3,9 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   Send,
   Sparkles,
-  Trash2,
-  ChevronRight,
-  Bot,
   User,
   Loader2,
   Star,
-  Play,
-  Info,
   AlertCircle,
   RefreshCcw,
 } from "lucide-react";
@@ -41,7 +36,6 @@ const ChatInterface = ({
   const scrollRef = useRef<HTMLDivElement>(null);
   const lastProcessedMessageIdRef = useRef<string | null>(null);
 
-  // Sync provider with localStorage (sidebar controls)
   useEffect(() => {
     const syncSettings = () => {
       const savedProvider = localStorage.getItem("chatbot_provider") || "gemini";
@@ -49,12 +43,11 @@ const ChatInterface = ({
     };
 
     window.addEventListener("storage", syncSettings);
-    syncSettings(); // Initial load
+    syncSettings(); 
 
     return () => window.removeEventListener("storage", syncSettings);
   }, []);
 
-  // Auto-scroll to bottom
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -67,7 +60,6 @@ const ChatInterface = ({
       setIsTyping(true);
       setError(null);
 
-      // Get the API key for the current provider
       const keyName = `chatbot_api_key_${provider}`;
       const userApiKey = localStorage.getItem(keyName);
 
@@ -158,7 +150,6 @@ const ChatInterface = ({
       setInput("");
       setError(null);
       onSendMessage(userMessage);
-      // triggerAIResponse is now handled by the useEffect observer
     };
 
     const handleRetry = () => {
@@ -169,13 +160,11 @@ const ChatInterface = ({
       }
     };
 
-  // Observer: Trigger AI whenever the last message is from a user
   useEffect(() => {
     if (session.id === "draft" || isTyping) return;
 
     const lastMsg = session.messages[session.messages.length - 1];
     if (lastMsg?.role === "user" && lastMsg.id !== lastProcessedMessageIdRef.current) {
-      // Only trigger if no assistant message follows this specific user message
       const assistantIdx = session.messages.findLastIndex(
         (m) => m.role === "assistant",
       );
@@ -190,7 +179,6 @@ const ChatInterface = ({
 
   return (
     <div className="flex flex-col h-full w-full max-w-5xl mx-auto px-6">
-      {/* Messages Area */}
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto pt-8 pb-12 space-y-8 scroll-smooth custom-scrollbar"
@@ -203,7 +191,6 @@ const ChatInterface = ({
               msg.role === "user" ? "flex-row-reverse" : "flex-row",
             )}
           >
-            {/* Avatar */}
             <div
               className={cn(
                 "w-9 h-9 rounded-full flex items-center justify-center shrink-0 shadow-lg transition-transform hover:scale-110",
@@ -218,8 +205,6 @@ const ChatInterface = ({
                 <Sparkles className="w-4 h-4 text-red-300" />
               )}
             </div>
-
-            {/* Message */}
             <div
               className={cn(
                 "max-w-[85%] px-6 py-4 rounded-4xl text-[15px] leading-relaxed transition-all hover:shadow-xl hover:shadow-black/20",
@@ -333,7 +318,6 @@ const ChatInterface = ({
         )}
       </div>
 
-      {/* Main Input Area */}
       <div className="pb-8 pt-4">
         <div className="relative group max-w-4xl mx-auto">
           <div className="absolute -inset-1 bg-linear-to-r from-primary/20 via-primary/5 to-primary/20 rounded-3xl blur-xl opacity-30 group-focus-within:opacity-100 transition-opacity duration-500" />

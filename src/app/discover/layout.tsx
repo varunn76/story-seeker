@@ -1,37 +1,35 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import ChatSidebar from "@/components/ChatSidebar";
-import Navbar from "@/components/Navbar";
-import { useChatStore } from "@/hooks/useChatStore";
+import type { Metadata } from "next";
+import DiscoverLayoutClient from "./DiscoverLayoutClient";
 
-export default function DiscoverLayout({ children }: { children: React.ReactNode }) {
-  const store = useChatStore();
-  const [isHydrated, setIsHydrated] = useState(false);
+export const metadata: Metadata = {
+  title: "Discover • StorySeeker",
+  description:
+    "Describe what you remember and let StorySeeker find the movie, show, or story for you through a guided chat experience.",
 
-  // Hydration guard for Next.js
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
+  openGraph: {
+    title: "Discover Stories by Memory",
+    description:
+      "Use a chat-based experience to find movies and shows from vague memories.",
+    url: process.env.NEXT_PUBLIC_BASE_URL + "/discover" || "http://localhost:3000/discover",
+    siteName: "StorySeeker",
+    images: [
+      {
+        url: "/og-discover.png",
+        width: 1200,
+        height: 630,
+        alt: "StorySeeker Discover Chat",
+      },
+    ],
+  },
 
-  if (!isHydrated) return null;
+  twitter: {
+    card: "summary_large_image",
+    title: "Discover • StorySeeker",
+    description: "Chat your way to the right movie or story.",
+    images: ["/og-discover.png"],
+  },
+};
 
-  return (
-    <main className="h-screen flex flex-col bg-black text-foreground overflow-hidden">
-      <Navbar />
-      
-      <div className="flex-1 flex pt-24 overflow-hidden">
-        {/* Sidebar */}
-        <ChatSidebar 
-          sessions={store.sessions}
-          currentSessionId={store.currentSessionId}
-          onDeleteSession={store.deleteChat}
-        />
-
-        {/* Main Content Area */}
-        <section className="flex-1 relative flex flex-col overflow-hidden">
-            {children}
-        </section>
-      </div>
-    </main>
-  );
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return <DiscoverLayoutClient>{children}</DiscoverLayoutClient>;
 }

@@ -7,18 +7,14 @@ interface ModelSelectorProps {
 }
 
 export default function ModelSelector({ provider, setProvider }: ModelSelectorProps) {
-  // Load from localStorage on mount
   useEffect(() => {
     const savedProvider = localStorage.getItem('chatbot_provider');
     if (savedProvider) setProvider(savedProvider);
   }, [setProvider]);
-
-  // Save changes to localStorage
   const handleProviderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
     setProvider(val);
     localStorage.setItem('chatbot_provider', val);
-    // Dispatch event for other components (like sidebar) to sync
     window.dispatchEvent(new Event("storage"));
   };
 

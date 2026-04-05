@@ -30,8 +30,6 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
-    // console.log('id------------------------->', id);
-
     if (!id) {
       return NextResponse.json(
         { error: "ID is missing in the query parameters" },
