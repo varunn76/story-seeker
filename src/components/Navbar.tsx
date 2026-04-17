@@ -3,12 +3,15 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Search, Menu, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+
+  if (pathname?.startsWith("/discover")) return null;
 
   const links = [
     { label: "Discover", href: "/discover" },

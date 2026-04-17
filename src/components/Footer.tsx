@@ -2,8 +2,13 @@
 
 import { Film, Mail, Globe, Video } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export const Footer = () => {
+  const pathname = usePathname();
+
+  if (pathname?.startsWith("/discover")) return null;
+
   return (
     <footer className="py-12 px-6 border-t border-white/5 bg-zinc-950">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">

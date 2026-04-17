@@ -9,7 +9,7 @@ import { FEATURES, SUGGESTED_MOVIES } from "@/constants";
 
 export const ChatPreview = () => {
   return (
-    <section className="py-20 px-3 sm:px-6 relative overflow-visible bg-[#151010] isolate">
+    <section className="py-12 sm:py-20 px-4 sm:px-6 relative overflow-hidden bg-[#151010] isolate">
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
         <motion.div
           animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
@@ -23,10 +23,10 @@ export const ChatPreview = () => {
         />
       </div>
 
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 sm:gap-20 items-center">
-        <div className="space-y-8 sm:space-y-10 lg:pr-10">
+      <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 sm:gap-20 items-center">
+        <div className="space-y-6 sm:space-y-10 lg:pr-10 ">
           <div className="space-y-4">
-            <h2 className="text-[2.5rem] sm:text-[3.5rem] md:text-6xl font-black text-white tracking-tighter leading-[0.95] sm:leading-[0.9]">
+            <h2 className="text-4xl sm:text-[3.5rem] md:text-6xl font-black text-white tracking-tighter leading-[1.1] sm:leading-[0.9]">
               Talk to AI <br className="hidden sm:block" />
               <span className="text-primary relative italic">
                 Like a Friend
@@ -40,7 +40,7 @@ export const ChatPreview = () => {
             </h2>
           </div>
 
-          <p className="text-zinc-400 text-lg sm:text-xl leading-relaxed max-w-lg font-medium">
+          <p className="text-zinc-400 text-sm sm:text-xl leading-relaxed max-w-lg font-medium">
             Just describe what you remember — a scene, a feeling, or a fragment
             of the story. The system pieces it together and surfaces the closest
             matches in seconds.
@@ -53,7 +53,7 @@ export const ChatPreview = () => {
           </div>
         </div>
 
-        <div className="relative group">
+        <div className="relative hidden lg:block group">
           <MacWindow>
             <UserMessage content="I'm looking for a film where people enter dreams within dreams to steal secrets from the subconscious." />
 

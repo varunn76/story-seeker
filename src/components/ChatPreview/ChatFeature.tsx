@@ -23,7 +23,7 @@ export const ChatFeature = ({
     transition={{ delay: index * 0.1 }}
     className="flex items-center gap-5 group"
   >
-    <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-primary/20 group-hover:border-primary/30 transition-all duration-500">
+    <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-primary/20 group-hover:border-primary/30 transition-all duration-500 shrink-0">
       <Icon className="w-5 h-5 text-zinc-400 group-hover:text-primary transition-colors" />
     </div>
     <div>

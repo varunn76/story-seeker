@@ -27,6 +27,9 @@ interface ChatStore {
   setSearchResults: (sessionId: string, results: any[]) => void;
   getCurrentSession: () => ChatSession | null;
   getSessionById: (id: string) => ChatSession | null;
+  isSidebarOpen: boolean;
+  setSidebarOpen: (isOpen: boolean) => void;
+  toggleSidebar: () => void;
 }
 
 export const useChatStore = create<ChatStore>()(
@@ -34,6 +37,9 @@ export const useChatStore = create<ChatStore>()(
     (set, get) => ({
       sessions: [],
       currentSessionId: null,
+      isSidebarOpen: false,
+      setSidebarOpen: (isOpen) => set({ isSidebarOpen: isOpen }),
+      toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
 
       createNewChat: (firstMessage) => {
         const id = uuidv4();

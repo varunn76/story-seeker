@@ -10,9 +10,11 @@ const HeroSectionSlider = () => {
   const { data: movies = [], isLoading: loading } = useDiscoverMovies();
   const showSkeletons = loading || movies.length === 0;
   const displayItems = showSkeletons ? [1, 2, 3] : movies;
-  
+
   const [currentIndex, setCurrentIndex] = useState(1);
-  const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1200,
+  );
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ const HeroSectionSlider = () => {
       const cards = containerRef.current.querySelectorAll(
         ".carousel-card-wrapper",
       );
-      
+
       const xOffset = isMobile ? windowWidth * 0.65 : isTablet ? 300 : 450;
       const baseScale = isMobile ? 0.7 : 0.8;
       const featuredScale = isMobile ? 0.85 : 0.9;
@@ -47,7 +49,7 @@ const HeroSectionSlider = () => {
       cards.forEach((card, index) => {
         const diff = index - currentIndex;
         const length = displayItems.length;
-        
+
         let normalizedDiff = diff;
         if (diff > length / 2) normalizedDiff -= length;
         if (diff < -length / 2) normalizedDiff += length;
@@ -106,7 +108,7 @@ const HeroSectionSlider = () => {
   }, [currentIndex, displayItems, windowWidth]);
 
   return (
-    <div className="relative w-full max-w-[1400px] mx-auto px-4 pb-12 sm:pb-20 mt-[-40px] sm:mt-[-70px]">
+    <div className="relative w-full max-w-[1400px] mx-auto px-4 pb-12 sm:pb-20 mt-[-100px] sm:mt-[-70px]">
       <div
         ref={containerRef}
         className="relative flex items-center justify-center h-[350px] sm:h-[450px] md:h-[400px] perspective-[1500px] sm:perspective-[2000px] overflow-hidden sm:overflow-visible"

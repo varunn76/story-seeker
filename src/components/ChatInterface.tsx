@@ -8,12 +8,13 @@ import {
   Star,
   AlertCircle,
   RefreshCcw,
+  Menu,
 } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useRouter } from "next/navigation";
 import { parseAIResponse, stripJsonBlock } from "@/utils/parser";
 import ModelSelector from "@/components/ModelSelector";
-import { ChatSession, Message } from "@/hooks/useChatStore";
+import { ChatSession, Message, useChatStore } from "@/hooks/useChatStore";
 
 interface ChatInterfaceProps {
   session: ChatSession;
@@ -29,21 +30,25 @@ const ChatInterface = ({
   setSearchResults,
 }: ChatInterfaceProps) => {
   const router = useRouter();
+  const store = useChatStore();
   const [input, setInput] = useState("");
   const [provider, setProvider] = useState("gemini");
   const [isTyping, setIsTyping] = useState(false);
-  const [error, setError] = useState<{ message: string; type: string } | null>(null);
+  const [error, setError] = useState<{ message: string; type: string } | null>(
+    null,
+  );
   const scrollRef = useRef<HTMLDivElement>(null);
   const lastProcessedMessageIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     const syncSettings = () => {
-      const savedProvider = localStorage.getItem("chatbot_provider") || "gemini";
+      const savedProvider =
+        localStorage.getItem("chatbot_provider") || "gemini";
       setProvider(savedProvider);
     };
 
     window.addEventListener("storage", syncSettings);
-    syncSettings(); 
+    syncSettings();
 
     return () => window.removeEventListener("storage", syncSettings);
   }, []);
@@ -144,27 +149,32 @@ const ChatInterface = ({
     [session.messages, provider, onAssistantReply, setSearchResults, isTyping],
   );
 
-    const handleSend = () => {
-      if (!input.trim() || isTyping) return;
-      const userMessage = input;
-      setInput("");
-      setError(null);
-      onSendMessage(userMessage);
-    };
+  const handleSend = () => {
+    if (!input.trim() || isTyping) return;
+    const userMessage = input;
+    setInput("");
+    setError(null);
+    onSendMessage(userMessage);
+  };
 
-    const handleRetry = () => {
-      const lastUserMsg = [...session.messages].reverse().find(m => m.role === "user");
-      if (lastUserMsg) {
-        setError(null);
-        triggerAIResponse(lastUserMsg.content);
-      }
-    };
+  const handleRetry = () => {
+    const lastUserMsg = [...session.messages]
+      .reverse()
+      .find((m) => m.role === "user");
+    if (lastUserMsg) {
+      setError(null);
+      triggerAIResponse(lastUserMsg.content);
+    }
+  };
 
   useEffect(() => {
     if (session.id === "draft" || isTyping) return;
 
     const lastMsg = session.messages[session.messages.length - 1];
-    if (lastMsg?.role === "user" && lastMsg.id !== lastProcessedMessageIdRef.current) {
+    if (
+      lastMsg?.role === "user" &&
+      lastMsg.id !== lastProcessedMessageIdRef.current
+    ) {
       const assistantIdx = session.messages.findLastIndex(
         (m) => m.role === "assistant",
       );
@@ -179,9 +189,19 @@ const ChatInterface = ({
 
   return (
     <div className="flex flex-col h-full w-full max-w-5xl mx-auto px-6">
+      <div className="shrink-0 pt-4 pb-2 z-40 flex items-center lg:gap-2">
+        <button
+          onClick={() => store.toggleSidebar()}
+          className="p-2 mr-1 hover:bg-white/10 rounded-xl lg:hidden text-white/70 hover:text-white transition-colors"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+        <ModelSelector provider={provider} setProvider={setProvider} />
+      </div>
+
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto pt-8 pb-12 space-y-8 scroll-smooth custom-scrollbar"
+        className="flex-1 overflow-y-auto pt-4 pb-12 space-y-8 scroll-smooth custom-scrollbar"
       >
         {session.messages.map((msg) => (
           <div
@@ -243,8 +263,8 @@ const ChatInterface = ({
               <AlertCircle size={18} />
               <span>{error.message}</span>
             </div>
-            <div className="flex items-center gap-3">
-              <button 
+            <div className="flex flex-col lg:flex-row items-center gap-3">
+              <button
                 onClick={handleRetry}
                 className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all border border-white/5"
               >
@@ -268,7 +288,9 @@ const ChatInterface = ({
               {session.searchResults.map((movie) => (
                 <div
                   key={movie.id}
-                  onClick={() => router.push(`/${movie.media_type || "movie"}/${movie.id}`)}
+                  onClick={() =>
+                    router.push(`/${movie.media_type || "movie"}/${movie.id}`)
+                  }
                   className="group bg-surface/40 border border-white/5 rounded-2xl overflow-hidden hover:border-primary/20 transition-all shadow-xl cursor-pointer"
                 >
                   <div className="relative aspect-video overflow-hidden">
@@ -323,10 +345,6 @@ const ChatInterface = ({
           <div className="absolute -inset-1 bg-linear-to-r from-primary/20 via-primary/5 to-primary/20 rounded-3xl blur-xl opacity-30 group-focus-within:opacity-100 transition-opacity duration-500" />
 
           <div className="relative flex items-center gap-4 bg-zinc-900/80 backdrop-blur-2xl border border-white/10 p-2 pl-4 rounded-2xl shadow-2xl">
-            <ModelSelector provider={provider} setProvider={setProvider} />
-
-            <div className="w-px h-6 bg-white/10" />
-
             <input
               type="text"
               placeholder="Describe what you remember..."
@@ -347,13 +365,13 @@ const ChatInterface = ({
           </div>
         </div>
 
-        <div className="flex justify-center gap-6 mt-4 text-[10px] font-black text-white/15 uppercase tracking-[0.2em]">
+        {/* <div className="flex justify-center gap-6 mt-4 text-[10px] font-black text-white/15 uppercase tracking-[0.2em]">
           <span>Powered by StorySeeker AI</span>
           <span>•</span>
           <span>Context: Multi-Turn</span>
           <span>•</span>
           <span>Memory: persistent</span>
-        </div>
+        </div> */}
       </div>
     </div>
   );

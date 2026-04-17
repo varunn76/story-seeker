@@ -4,6 +4,7 @@ import { Plus, MessageSquare, Trash2, ChevronLeft } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { ChatSession, useChatStore } from "@/hooks/useChatStore";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import ModelSelector from "./ModelSelector";
 
 interface ChatSidebarProps {
@@ -19,19 +20,17 @@ const ChatSidebar = ({
 }: ChatSidebarProps) => {
   const router = useRouter();
   const [provider, setProvider] = React.useState("gemini");
-  const [apiKey, setApiKey] = React.useState("");
-  const [showKey, setShowKey] = React.useState(false);
 
   React.useEffect(() => {
-    const savedProvider = localStorage.getItem("chatbot_provider") || "gemini";
-    setProvider(savedProvider);
+    const handleStorageChange = () => {
+      const savedProvider =
+        localStorage.getItem("chatbot_provider") || "gemini";
+      setProvider(savedProvider);
+    };
+    handleStorageChange();
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
-
-  React.useEffect(() => {
-    const keyName = `chatbot_api_key_${provider}`;
-    const savedKey = localStorage.getItem(keyName) || "";
-    setApiKey(savedKey);
-  }, [provider]);
 
   const handleProviderChange = (newProvider: string) => {
     setProvider(newProvider);
@@ -39,15 +38,17 @@ const ChatSidebar = ({
     window.dispatchEvent(new Event("storage"));
   };
 
-  const handleSaveKey = (val: string) => {
-    setApiKey(val);
-    const keyName = `chatbot_api_key_${provider}`;
-    localStorage.setItem(keyName, val);
-    window.dispatchEvent(new Event("storage"));
-  };
-
   return (
-    <aside className="w-80 h-full bg-zinc-950/50 border-r border-white/5 flex flex-col p-4 space-y-4">
+    <aside className="w-80 h-full bg-zinc-900 border-r border-white/5 flex flex-col p-4 space-y-4">
+      <div className="px-2 pb-2">
+        <Link
+          href="/"
+          className="text-lg sm:text-xl font-black cursor-pointer tracking-tighter text-primary uppercase italic"
+        >
+          StorySeeker
+        </Link>
+      </div>
+
       <button
         onClick={() => router.push("/discover")}
         className="w-full py-3 px-4 bg-primary/10 border border-primary/20 rounded-xl flex items-center gap-3 text-primary font-bold hover:bg-primary/20 transition-all group"
@@ -100,38 +101,6 @@ const ChatSidebar = ({
       </div>
 
       <div className="pt-4 border-t border-white/5 space-y-4">
-        <div className="space-y-2">
-          <label className="text-[10px] font-black uppercase tracking-widest text-white/30 px-2">
-            Select Model
-          </label>
-          <div className="px-1">
-            <ModelSelector
-              provider={provider}
-              setProvider={handleProviderChange}
-            />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <div className="flex items-center justify-between px-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-white/30">
-              {provider} API Key
-            </label>
-            <button
-              onClick={() => setShowKey(!showKey)}
-              className="text-[9px] font-bold text-primary hover:underline"
-            >
-              {showKey ? "Hide" : "Show"}
-            </button>
-          </div>
-          <input
-            type={showKey ? "text" : "password"}
-            value={apiKey}
-            onChange={(e) => handleSaveKey(e.target.value)}
-            placeholder={`Enter ${provider} API Key...`}
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-xs text-white placeholder:text-white/10 focus:border-primary/50 outline-none transition-all"
-          />
-        </div>
         <div className="p-4 bg-surface rounded-2xl border border-white/5 space-y-3">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/20 flex items-center justify-center">

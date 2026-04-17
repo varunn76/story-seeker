@@ -46,7 +46,7 @@ export const AIMessage = ({
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="flex gap-4 sm:gap-6 overflow-x-auto pt-4 pb-8 -mx-4 px-4 sm:mx-0 sm:px-2 no-scrollbar relative overflow-visible"
+        className="flex gap-4 sm:gap-6 overflow-x-auto pt-4 pb-8 -mx-3 px-3 sm:mx-0 sm:px-2 no-scrollbar relative overflow-visible"
       >
         {movies.map((movie, i) => (
           <MovieResultCard key={i} {...movie} />

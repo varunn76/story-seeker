@@ -57,11 +57,11 @@ export const Hero = () => {
 
         <div
           ref={buttonsRef}
-          className="mt-4 mb-8 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto px-4 sm:px-0"
+          className="mt-4 md:mb-8 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto px-4 sm:px-0"
         >
-          <button 
+          <button
             onClick={() => router.push("/discover")}
-            className="w-full sm:w-auto px-10 sm:px-12 cursor-pointer py-4 flex items-center bg-primary text-white font-bold rounded-full text-[16px] sm:text-[18px] shadow-[0_10px_30px_-10px_rgba(201,68,54,0.4)] hover:scale-105 active:scale-95 transition-all"
+            className="w-auto px-10 sm:px-12 cursor-pointer py-4 flex items-center text-center bg-primary text-white font-bold rounded-full text-[16px] sm:text-[18px] shadow-[0_10px_30px_-10px_rgba(201,68,54,0.4)] hover:scale-105 active:scale-95 transition-all"
           >
             Get started
             <ArrowRight className="w-5 h-5 ml-2" />
