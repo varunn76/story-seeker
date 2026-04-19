@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Search, Menu, X } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,11 +24,12 @@ const Navbar = () => {
     <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl">
       <div className="relative flex items-center justify-between px-4 sm:px-8 py-3 bg-black/40 backdrop-blur-md rounded-full border border-white/10 shadow-lg transition-all duration-300">
         <div className="flex items-center">
+          <Image src="/logo.png" alt="Logo" width={50} height={50} />
           <Link
             href="/"
             className="text-lg sm:text-xl font-black cursor-pointer tracking-tighter text-primary uppercase italic"
           >
-            StorySeeker
+            <span className="text-white">Story</span>Seeker
           </Link>
         </div>
 

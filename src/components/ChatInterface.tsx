@@ -14,7 +14,9 @@ import { cn } from "@/utils/cn";
 import { useRouter } from "next/navigation";
 import { parseAIResponse, stripJsonBlock } from "@/utils/parser";
 import ModelSelector from "@/components/ModelSelector";
-import { ChatSession, Message, useChatStore } from "@/hooks/useChatStore";
+import { ChatSession, useChatStore } from "@/hooks/useChatStore";
+import { useSeekPoints } from "@/hooks/useSeekPoints";
+import { internalHeaders } from "@/utils/internalHeaders";
 
 interface ChatInterfaceProps {
   session: ChatSession;
@@ -31,6 +33,7 @@ const ChatInterface = ({
 }: ChatInterfaceProps) => {
   const router = useRouter();
   const store = useChatStore();
+  const seekPoints = useSeekPoints();
   const [input, setInput] = useState("");
   const [provider, setProvider] = useState("gemini");
   const [isTyping, setIsTyping] = useState(false);
@@ -68,9 +71,24 @@ const ChatInterface = ({
       const keyName = `chatbot_api_key_${provider}`;
       const userApiKey = localStorage.getItem(keyName);
 
+      // Deduct a Seek Point if not using own API key
+      if (!userApiKey) {
+        const ok = seekPoints.consumePoint();
+        if (!ok) {
+          setError({
+            message:
+              "You've used all 6 Seek Points for today. Your points will refresh tomorrow — or add your own API key to keep searching.",
+            type: "error",
+          });
+          setIsTyping(false);
+          return;
+        }
+      }
+
       try {
         const chatRes = await fetch("/api/chat", {
           method: "POST",
+          headers: internalHeaders(),
           body: JSON.stringify({
             messages: [
               ...session.messages,
@@ -88,7 +106,10 @@ const ChatInterface = ({
           let displayMsg =
             "This model is currently unavailable or under high demand.";
 
-          if (errorMsg.includes("Free tier limit")) {
+          if (
+            errorMsg.includes("Seek Points") ||
+            errorMsg.includes("Free tier limit")
+          ) {
             displayMsg = errorMsg;
           } else if (
             errorMsg.toLowerCase().includes("quota") ||
@@ -110,6 +131,7 @@ const ChatInterface = ({
           try {
             const searchRes = await fetch("/api/chatbot-search", {
               method: "POST",
+              headers: internalHeaders(),
               body: JSON.stringify({ ...structuredData, apiKey: userApiKey }),
             });
             const searchData = await searchRes.json();
@@ -125,6 +147,7 @@ const ChatInterface = ({
           if (boldMatch) {
             const searchRes = await fetch("/api/chatbot-search", {
               method: "POST",
+              headers: internalHeaders(),
               body: JSON.stringify({ title: boldMatch[1], apiKey: userApiKey }),
             });
             const searchData = await searchRes.json();
@@ -149,8 +172,14 @@ const ChatInterface = ({
     [session.messages, provider, onAssistantReply, setSearchResults, isTyping],
   );
 
+  const points = seekPoints.getPoints();
+  const keyName = `chatbot_api_key_${provider}`;
+  const hasOwnKey =
+    typeof window !== "undefined" && !!localStorage.getItem(keyName);
+  const canSend = !isTyping && !!input.trim() && (hasOwnKey || points > 0);
+
   const handleSend = () => {
-    if (!input.trim() || isTyping) return;
+    if (!canSend) return;
     const userMessage = input;
     setInput("");
     setError(null);
@@ -325,12 +354,14 @@ const ChatInterface = ({
                       )}
                     </div>
                     <div className="flex gap-2 pt-2">
-                      <button className="flex-1 py-2 bg-white text-black text-[10px] font-black uppercase rounded-lg hover:scale-105 active:scale-95 transition-all">
-                        {movie.media_type === "person" ? "View Works" : "Play"}
+                      <button className="flex-1 py-2 bg-white cursor-pointer text-black text-[10px] font-black uppercase rounded-lg hover:scale-105 active:scale-95 transition-all">
+                        {movie.media_type === "person"
+                          ? "View Works"
+                          : "Details"}
                       </button>
-                      <button className="flex-1 py-2 bg-white/5 text-white text-[10px] font-black uppercase border border-white/10 rounded-lg hover:bg-white/10 transition-all">
+                      {/* <button className="flex-1 py-2 bg-white/5 text-white text-[10px] font-black uppercase border border-white/10 rounded-lg hover:bg-white/10 transition-all">
                         Details
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 </div>
@@ -357,7 +388,8 @@ const ChatInterface = ({
             <div className="flex items-center gap-2 pr-2">
               <button
                 onClick={handleSend}
-                className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-white shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+                disabled={!canSend}
+                className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-white shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:scale-100"
               >
                 <Send size={20} strokeWidth={2.5} />
               </button>

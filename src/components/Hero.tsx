@@ -57,7 +57,7 @@ export const Hero = () => {
 
         <div
           ref={buttonsRef}
-          className="mt-4 md:mb-8 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto px-4 sm:px-0"
+          className="my-4 md:mb-8 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto px-4 sm:px-0"
         >
           <button
             onClick={() => router.push("/discover")}

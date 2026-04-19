@@ -1,11 +1,19 @@
 "use client";
 import React from "react";
-import { Plus, MessageSquare, Trash2, ChevronLeft } from "lucide-react";
+import {
+  Plus,
+  MessageSquare,
+  Trash2,
+  Zap,
+  RefreshCw,
+  ShieldCheck,
+  Infinity,
+} from "lucide-react";
 import { cn } from "@/utils/cn";
-import { ChatSession, useChatStore } from "@/hooks/useChatStore";
+import { ChatSession } from "@/hooks/useChatStore";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import ModelSelector from "./ModelSelector";
+import { useSeekPoints } from "@/hooks/useSeekPoints";
 
 interface ChatSidebarProps {
   sessions: ChatSession[];
@@ -13,30 +21,40 @@ interface ChatSidebarProps {
   onDeleteSession: (id: string) => void;
 }
 
+const PROVIDER_LABELS: Record<string, string> = {
+  gemini: "Gemini 3 Flash",
+  openai: "GPT-4o mini",
+  claude: "Claude 3 Haiku",
+};
+
 const ChatSidebar = ({
   sessions,
   currentSessionId,
   onDeleteSession,
 }: ChatSidebarProps) => {
   const router = useRouter();
+  const { getPoints, syncReset } = useSeekPoints();
   const [provider, setProvider] = React.useState("gemini");
+  const [hasValidKey, setHasValidKey] = React.useState(false);
 
-  React.useEffect(() => {
-    const handleStorageChange = () => {
-      const savedProvider =
-        localStorage.getItem("chatbot_provider") || "gemini";
-      setProvider(savedProvider);
-    };
-    handleStorageChange();
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
+  const checkKeyStatus = React.useCallback(() => {
+    const savedProvider = localStorage.getItem("chatbot_provider") || "gemini";
+    setProvider(savedProvider);
+    const status = localStorage.getItem(`chatbot_api_status_${savedProvider}`);
+    const key = localStorage.getItem(`chatbot_api_key_${savedProvider}`);
+    setHasValidKey(status === "valid" && !!key);
   }, []);
 
-  const handleProviderChange = (newProvider: string) => {
-    setProvider(newProvider);
-    localStorage.setItem("chatbot_provider", newProvider);
-    window.dispatchEvent(new Event("storage"));
-  };
+  React.useEffect(() => {
+    syncReset();
+    checkKeyStatus();
+    window.addEventListener("storage", checkKeyStatus);
+    return () => window.removeEventListener("storage", checkKeyStatus);
+  }, [syncReset, checkKeyStatus]);
+
+  const points = getPoints();
+  const totalPoints = 6;
+  const isExhausted = points === 0;
 
   return (
     <aside className="w-80 h-full bg-zinc-900 border-r border-white/5 flex flex-col p-4 space-y-4">
@@ -100,23 +118,111 @@ const ChatSidebar = ({
         ))}
       </div>
 
-      <div className="pt-4 border-t border-white/5 space-y-4">
-        <div className="p-4 bg-surface rounded-2xl border border-white/5 space-y-3">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/20 flex items-center justify-center">
-              <span className="text-[10px] font-bold text-primary">AI</span>
+      {/* Bottom Widget — Own Key or Seek Points */}
+      <div className="pt-4 border-t border-white/5">
+        {hasValidKey ? (
+          /* ── Own API Key Active ── */
+          <div className="p-4 rounded-2xl border bg-green-500/5 border-green-500/20 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center">
+                  <ShieldCheck className="w-3.5 h-3.5 text-green-400" />
+                </div>
+                <span className="text-[11px] font-black text-white/70 uppercase tracking-widest">
+                  Own Key Active
+                </span>
+              </div>
+              <Infinity className="w-4 h-4 text-green-400" />
             </div>
-            <div className="text-[10px] font-bold text-white/60">
-              StorySeeker Pro
+
+            <div className="flex items-center justify-center py-1">
+              <div className="px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20">
+                <span className="text-[10px] font-black text-green-400 uppercase tracking-widest">
+                  {PROVIDER_LABELS[provider] || provider}
+                </span>
+              </div>
             </div>
+
+            <p className="text-[9px] text-green-500/60 text-center uppercase tracking-widest font-bold">
+              Unlimited searches · verified
+            </p>
           </div>
-          <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-            <div className="h-full w-[80%] bg-primary shadow-[0_0_8px_rgba(188,60,195,0.5)]" />
+        ) : (
+          /* ── Seek Points ── */
+          <div
+            className={cn(
+              "p-4 rounded-2xl border space-y-3 transition-colors",
+              isExhausted
+                ? "bg-red-500/5 border-red-500/20"
+                : "bg-surface border-white/5"
+            )}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div
+                  className={cn(
+                    "w-7 h-7 rounded-full flex items-center justify-center",
+                    isExhausted
+                      ? "bg-red-500/20 border border-red-500/20"
+                      : "bg-primary/20 border border-primary/20"
+                  )}
+                >
+                  <Zap
+                    className={cn(
+                      "w-3.5 h-3.5",
+                      isExhausted ? "text-red-400" : "text-primary"
+                    )}
+                  />
+                </div>
+                <span className="text-[11px] font-black text-white/70 uppercase tracking-widest">
+                  Seek Points
+                </span>
+              </div>
+              <span
+                className={cn(
+                  "text-xs font-black tabular-nums",
+                  isExhausted ? "text-red-400" : "text-white/50"
+                )}
+              >
+                {points}/{totalPoints}
+              </span>
+            </div>
+
+            <div className="flex gap-1.5 justify-center">
+              {Array.from({ length: totalPoints }).map((_, i) => (
+                <div
+                  key={i}
+                  className={cn(
+                    "h-2 w-2 rounded-full transition-all duration-300",
+                    i < points
+                      ? isExhausted
+                        ? "bg-red-400"
+                        : "bg-primary shadow-[0_0_6px_rgba(201,68,54,0.6)]"
+                      : "bg-white/10"
+                  )}
+                />
+              ))}
+            </div>
+
+            {isExhausted ? (
+              <div className="text-center space-y-1">
+                <p className="text-[9px] text-red-400/80 font-bold uppercase tracking-widest">
+                  No points left today
+                </p>
+                <div className="flex items-center justify-center gap-1 text-[9px] text-white/30 font-medium">
+                  <RefreshCw className="w-2.5 h-2.5" />
+                  Resets tomorrow at midnight
+                </div>
+              </div>
+            ) : (
+              <p className="text-[9px] text-white/30 text-center uppercase tracking-widest font-bold">
+                {points === totalPoints
+                  ? "6 free searches today"
+                  : `${points} search${points !== 1 ? "es" : ""} remaining`}
+              </p>
+            )}
           </div>
-          <div className="text-[9px] text-white/30 text-center uppercase tracking-widest font-bold">
-            Standard Plan: 80% used
-          </div>
-        </div>
+        )}
       </div>
     </aside>
   );

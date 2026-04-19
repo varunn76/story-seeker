@@ -1,14 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
+import { internalHeaders } from "@/utils/internalHeaders";
 
 export const useDiscoverMovies = (version: string = "movie", page: number = 1) => {
   return useQuery({
     queryKey: ["discover", version, page],
     queryFn: async () => {
-      const response = await fetch(`/api/discover?version=${version}&page=${page}`);
+      const response = await fetch(
+        `/api/discover?version=${version}&page=${page}`,
+        { headers: internalHeaders() }
+      );
       if (!response.ok) throw new Error("Failed to fetch discovery content");
-      
+
       const data = await response.json();
-      
+
       if (!data.data?.results) return [];
 
       return data.data.results
@@ -18,8 +22,8 @@ export const useDiscoverMovies = (version: string = "movie", page: number = 1) =
           title: movie.title || movie.name,
           image: `https://image.tmdb.org/t/p/original${movie.backdrop_path || movie.poster_path}`,
           metadata: {
-            duration: "2h 15m", 
-            year: (movie.release_date || movie.first_air_date)?.split("-")[0] || "2024", 
+            duration: "2h 15m",
+            year: (movie.release_date || movie.first_air_date)?.split("-")[0] || "2024",
             language: movie.original_language?.toUpperCase() || "EN",
           },
         }));
